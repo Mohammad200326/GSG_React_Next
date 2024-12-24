@@ -1,0 +1,11 @@
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  box-shadow: 3px 3px 6px 0px #888;
+  border-radius: 6px;
+}
+.todo-item > span {
+  font-size: 13px;
+}
