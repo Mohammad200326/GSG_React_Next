@@ -12,13 +12,14 @@ import moment from "moment";
 interface Task {
   title: string;
   urgent: boolean;
+  id: number;
 }
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [numOfCompleted, setNumOfCompleted] = useState(0);
 
   const handleFormData = (title: string, urgent: boolean) => {
-    setTasks([...tasks, { title: title, urgent: urgent }]);
+    setTasks([...tasks, { title: title, urgent: urgent, id: Date.now() }]);
   };
   const createdTasks = tasks.length;
 
@@ -26,6 +27,13 @@ function App() {
 
   const getNumOfCompleted = (numOfCompleted: number) => {
     setNumOfCompleted(numOfCompleted);
+  };
+
+  const handleDelete = (id: number) => {
+    const newTasks = tasks.filter((task) => {
+      return task.id !== id;
+    });
+    setTasks(newTasks);
   };
 
   return (
@@ -48,7 +56,11 @@ function App() {
         urgentTasks={urgentTasks}
         completedTasks={numOfCompleted}
       />
-      <AllTodos tasks={tasks} numOfCompleted={getNumOfCompleted} />
+      <AllTodos
+        tasks={tasks}
+        numOfCompleted={getNumOfCompleted}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 }

@@ -2,8 +2,9 @@ import { useState } from "react";
 import TodoItem from "./TodoItem";
 
 interface IProps {
-  tasks: { title: string; urgent: boolean }[];
+  tasks: { title: string; urgent: boolean; id: number }[];
   numOfCompleted: (numOfCompleted: number) => void;
+  handleDelete: (id: number) => void;
 }
 
 const AllTodos = (props: IProps) => {
@@ -14,11 +15,23 @@ const AllTodos = (props: IProps) => {
     setNumOfCompleted(updatedNum);
     props.numOfCompleted(updatedNum);
   };
+
+  const handleDelete = (id: number) => {
+    props.handleDelete(id);
+    const updateCompleted = numOfCompleted - 1;
+    setNumOfCompleted(updateCompleted);
+    props.numOfCompleted(updateCompleted);
+  };
   return (
     <div className="all-todos" style={{ padding: "5px", margin: "30px auto" }}>
-      {props.tasks.map((task, index) => {
+      {props.tasks.map((task) => {
         return (
-          <TodoItem task={task} key={index} isCompleted={handleCompleted} />
+          <TodoItem
+            task={task}
+            key={task.id}
+            isCompleted={handleCompleted}
+            handleDelete={handleDelete}
+          />
         );
       })}
     </div>
