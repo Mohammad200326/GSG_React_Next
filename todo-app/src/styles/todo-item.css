@@ -6,6 +6,10 @@
   box-shadow: 3px 3px 6px 0px #888;
   border-radius: 6px;
 }
+.todo-item > input {
+  width: 20px;
+  height: 20px;
+}
 .todo-item > span {
-  font-size: 13px;
+  font-size: 20px;
 }

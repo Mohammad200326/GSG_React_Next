@@ -20,6 +20,12 @@
   width: calc(100% - 4px);
   padding: 5px 10px;
   border: 2px solid #39d08b;
+  font-size: 15px;
+}
+.form > form > div > input {
+  height: 30px;
+  width: 30px;
+  outline: none;
 }
 .form > form > button {
   background-color: #39d08b;

@@ -1,4 +1,4 @@
-import "./styles/statistics.css";
+import "../styles/statistics.css";
 
 interface IProps {
   createdTasks: number;

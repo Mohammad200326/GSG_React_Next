@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./styles/form.css";
+import "../styles/form.css";
 
 interface IProps {
   onSubmit: (title: string, urgent: boolean) => void;
@@ -32,7 +32,7 @@ const Form = (props: IProps) => {
           onChange={handleTitle}
         />
         <div>
-          <label htmlFor="urgent">Urgent: </label>
+          <label htmlFor="urgent">Urgent&#x1F525;: </label>
           <input
             type="checkbox"
             name="urgent"

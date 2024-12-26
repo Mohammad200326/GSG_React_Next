@@ -13,13 +13,17 @@ interface Task {
   title: string;
   urgent: boolean;
   id: number;
+  isCompleted: boolean;
 }
 function App() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [numOfCompleted, setNumOfCompleted] = useState(0);
 
   const handleFormData = (title: string, urgent: boolean) => {
-    setTasks([...tasks, { title: title, urgent: urgent, id: Date.now() }]);
+    setTasks([
+      ...tasks,
+      { title: title, urgent: urgent, id: Date.now(), isCompleted: false },
+    ]);
   };
   const createdTasks = tasks.length;
 
@@ -43,13 +47,13 @@ function App() {
         backgroundColor: "#DDDDDD",
         padding: "20px 10px",
         color: "black",
-        width: "300px",
+        width: "450px",
       }}
     >
-      <div className="date" style={{ textAlign: "left" }}>
+      <h2 className="date" style={{ textAlign: "left" }}>
         <b>{moment().format("dddd")}, </b>
         {moment().format("DD MMM")}
-      </div>
+      </h2>
       <Form onSubmit={handleFormData} />
       <Statistics
         createdTasks={createdTasks}
