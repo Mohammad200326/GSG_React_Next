@@ -1,61 +1,54 @@
 import { useState } from "react";
 import "./App.css";
 import Display from "./components/Display";
+import Button from "./components/Button";
 
 function App() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState(0);
+  const [isResult, setIsResult] = useState(false);
 
-  const handleInput = (value: string) => {
-    setInput((prevInput) => prevInput + value);
+  const handleClick = (value: string) => {
+    setInput((prevInput) => (isResult ? value : prevInput + value));
+    if (isResult) {
+      setResult(0);
+      setIsResult(false);
+    }
   };
 
   const handleResult = () => {
     setResult(eval(input));
+    setIsResult(true);
   };
+
+  const numbers: string[] = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+  const operations: string[] = ["+", "-"];
   return (
     <div className="app">
-      <Display result={result} input={input} />
+      <Display result={result} input={input} isResult={isResult} />
       <div className="calculator">
-        <button className="number" onClick={() => handleInput("1")}>
-          1
-        </button>
-        <button className="number" onClick={() => handleInput("2")}>
-          2
-        </button>
-        <button className="number" onClick={() => handleInput("3")}>
-          3
-        </button>
-        <button className="number" onClick={() => handleInput("4")}>
-          4
-        </button>
-        <button className="number" onClick={() => handleInput("5")}>
-          5
-        </button>
-        <button className="number" onClick={() => handleInput("6")}>
-          6
-        </button>
-        <button className="number" onClick={() => handleInput("7")}>
-          7
-        </button>
-        <button className="number" onClick={() => handleInput("8")}>
-          8
-        </button>
-        <button className="number" onClick={() => handleInput("9")}>
-          9
-        </button>
-        <button className="number" onClick={() => handleInput("0")}>
-          0
-        </button>
-        <button className="operation" onClick={() => handleInput("+")}>
-          +
-        </button>
-        <button className="operation" onClick={() => handleInput("-")}>
-          -
-        </button>
-        <button id="equal" onClick={handleResult}>
-          =
-        </button>
+        {/* Numbers */}
+        {numbers.map((number) => (
+          <Button
+            key={number}
+            value={number}
+            className="number"
+            onClick={handleClick}
+          />
+        ))}
+
+        {/* Operation */}
+        {operations.map((operation) => (
+          <Button
+            key={operation}
+            value={operation}
+            className="operation"
+            onClick={handleClick}
+          />
+        ))}
+
+        {/* Equal */}
+        <Button key="=" value="=" className="equal" onClick={handleResult} />
       </div>
     </div>
   );

@@ -1,0 +1,10 @@
+.number {
+  background-color: #3c64b1;
+}
+.operation {
+  background-color: #f2994a;
+}
+.equal {
+  background-color: #27ae60;
+  grid-column: -1 /1;
+}

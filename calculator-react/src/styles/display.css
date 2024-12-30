@@ -1,0 +1,12 @@
+.display {
+  background-color: #f4f6fb;
+  color: #373f41;
+  font-weight: bold;
+  font-size: 30px;
+  padding: 10px 15px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}

@@ -53,17 +53,3 @@
   color: white;
   font-weight: bold;
 }
-.app > .calculator > button {
-  border: none;
-  outline: none;
-}
-.app > .calculator > .number {
-  background-color: #3c64b1;
-}
-.app > .calculator > .operation {
-  background-color: #f2994a;
-}
-.app > .calculator > #equal {
-  background-color: #27ae60;
-  grid-column: -1 /1;
-}

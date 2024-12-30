@@ -1,23 +1,13 @@
+import "../styles/display.css";
+
 interface IProps {
   result: number;
   input: string;
+  isResult: boolean;
 }
 const Display = (props: IProps) => {
   return (
-    <div
-      style={{
-        backgroundColor: "#f4f6fB",
-        color: "#373f41",
-        fontWeight: "bold",
-        fontSize: "30px",
-        padding: "10px 15px",
-        height: "50px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        borderRadius: "8px",
-      }}
-    >
+    <div className="display">
       <div>
         <span>{props.input ? props.input : "0"}</span>
         <span>{props.result ? " = " : ""}</span>
