@@ -15,7 +15,8 @@ const Form = (props: IProps) => {
     setInput({ ...input, urgent: e.target.checked });
   };
 
-  const addTask = () => {
+  const addTask = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (input.title != "") {
       props.onSubmit(input.title, input.urgent);
       setInput({ title: "", urgent: false });
@@ -24,7 +25,7 @@ const Form = (props: IProps) => {
 
   return (
     <div className="form">
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form onSubmit={(e) => addTask(e)}>
         <input
           type="text"
           placeholder="Type Todo here..."
@@ -40,7 +41,7 @@ const Form = (props: IProps) => {
             onChange={handleUrgent}
           />
         </div>
-        <button onClick={addTask}>Add Todo</button>
+        <button>Add Todo</button>
       </form>
     </div>
   );
