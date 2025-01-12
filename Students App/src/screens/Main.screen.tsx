@@ -23,6 +23,7 @@ const Main = () => {
 
   useEffect(() => {
     const query = params.get("q") || "";
+    const graduated = params.get("graduated");
     const stdList: IStudent[] = storedData || [];
     const totalAbs = stdList.reduce((prev, cur) => {
       return prev + cur.absents;
@@ -41,6 +42,12 @@ const Main = () => {
     } else {
       setFilteredList(state.studentsList);
     }
+
+    if (graduated === "grad") {
+      setFilteredList(state.studentsList.filter((std) => std.isGraduated));
+    } else if (graduated === "non-grad") {
+      setFilteredList(state.studentsList.filter((std) => !std.isGraduated));
+    }
   }, [params, storedData, state.studentsList]);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,6 +56,16 @@ const Main = () => {
       params.set("q", query);
     } else {
       params.delete("q");
+    }
+    setParams(params);
+  };
+
+  const handleGradFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selected = e.target.value;
+    if (selected === "all") {
+      params.delete("graduated");
+    } else {
+      params.set("graduated", selected);
     }
     setParams(params);
   };
@@ -89,10 +106,13 @@ const Main = () => {
           onChange={handleSearch}
           value={params.get("q") || ""}
         />
-        <select name="" id="">
-          <option value=""></option>
-          <option value=""></option>
-          <option value=""></option>
+        <select
+          onChange={handleGradFilter}
+          value={params.get("graduated") || "all"}
+        >
+          <option value="all">All</option>
+          <option value="grad">Graduated</option>
+          <option value="non-grad">Not Graduated</option>
         </select>
         {COURSES_FILTERS.map((c) => {
           return (
