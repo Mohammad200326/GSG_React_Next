@@ -25,6 +25,7 @@ const Main = () => {
     const query = params.get("q") || "";
     const graduated = params.get("graduated");
     const courses = params.getAll("courses");
+    const absents = params.get("absents");
     const stdList: IStudent[] = storedData || [];
     const totalAbs = stdList.reduce((prev, cur) => {
       return prev + cur.absents;
@@ -51,10 +52,15 @@ const Main = () => {
     }
 
     if (courses.length) {
-      setFilteredList(
-        state.studentsList.filter((std) =>
+      setFilteredList((oldState) =>
+        oldState.filter((std) =>
           std.coursesList.some((c) => courses.includes(c))
         )
+      );
+    }
+    if (absents) {
+      setFilteredList((oldState) =>
+        oldState.filter((std) => std.absents >= Number(absents))
       );
     }
   }, [params, storedData, state.studentsList]);
@@ -71,12 +77,13 @@ const Main = () => {
 
   const handleGradFilter = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = e.target.value;
+    const newParams = new URLSearchParams(params.toString());
     if (selected === "all") {
-      params.delete("graduated");
+      newParams.delete("graduated");
     } else {
-      params.set("graduated", selected);
+      newParams.set("graduated", selected);
     }
-    setParams(params);
+    setParams(newParams);
   };
 
   const handleCourseFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +96,17 @@ const Main = () => {
       params.delete("courses", course);
     }
     setParams(params);
+  };
+
+  const handleAbsentsFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const filteredAbsents = e.target.value;
+    const newParams = new URLSearchParams(params);
+    if (Number(filteredAbsents)) {
+      newParams.set("absents", filteredAbsents);
+    } else {
+      newParams.delete("absents");
+    }
+    setParams(newParams);
   };
 
   const removeFirst = () => {
@@ -127,6 +145,7 @@ const Main = () => {
           onChange={handleSearch}
           value={params.get("q") || ""}
         />
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         <select
           onChange={handleGradFilter}
           value={params.get("graduated") || "all"}
@@ -135,7 +154,7 @@ const Main = () => {
           <option value="grad">Graduated</option>
           <option value="non-grad">Not Graduated</option>
         </select>
-        &nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
         {COURSES_FILTERS.map((c) => {
           return (
             <React.Fragment key={c}>
@@ -150,27 +169,47 @@ const Main = () => {
             </React.Fragment>
           );
         })}
-      </div>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
-          gap: "20px",
-        }}
-      >
-        {filteredList.map((student) => (
-          <Student
-            key={student.id}
-            id={student.id}
-            name={student.name}
-            age={student.age}
-            absents={student.absents}
-            isGraduated={student.isGraduated}
-            coursesList={student.coursesList}
-            onAbsentChange={handleAbsentChange}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <React.Fragment>
+          <label htmlFor="absents">
+            Absents: ({params.get("absents") || "0"}
+            {params.get("absents") === "10" ? "" : " or more"})
+          </label>
+          <input
+            style={{ padding: "0" }}
+            type="range"
+            onChange={handleAbsentsFilter}
+            min="0"
+            max="10"
+            id="absents"
+            value={params.get("absents") || "0"}
           />
-        ))}
+        </React.Fragment>
       </div>
+      {filteredList.length ? (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(400px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {filteredList.map((student) => (
+            <Student
+              key={student.id}
+              id={student.id}
+              name={student.name}
+              age={student.age}
+              absents={student.absents}
+              isGraduated={student.isGraduated}
+              coursesList={student.coursesList}
+              onAbsentChange={handleAbsentChange}
+            />
+          ))}
+        </div>
+      ) : (
+        <h3>No results found!</h3>
+      )}
       <div ref={lastStdRef}></div>
     </>
   );
