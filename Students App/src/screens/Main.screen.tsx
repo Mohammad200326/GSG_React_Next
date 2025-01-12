@@ -54,18 +54,26 @@ const Main = () => {
           Total Absents {state.totalAbsents}
         </b>
       </div>
-      {state.studentsList.map((student) => (
-        <Student
-          key={student.id}
-          id={student.id}
-          name={student.name}
-          age={student.age}
-          absents={student.absents}
-          isGraduated={student.isGraduated}
-          coursesList={student.coursesList}
-          onAbsentChange={handleAbsentChange}
-        />
-      ))}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(350px, 1fr))",
+          gap: "20px",
+        }}
+      >
+        {state.studentsList.map((student) => (
+          <Student
+            key={student.id}
+            id={student.id}
+            name={student.name}
+            age={student.age}
+            absents={student.absents}
+            isGraduated={student.isGraduated}
+            coursesList={student.coursesList}
+            onAbsentChange={handleAbsentChange}
+          />
+        ))}
+      </div>
       <div ref={lastStdRef}></div>
     </>
   );
