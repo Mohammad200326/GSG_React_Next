@@ -1,9 +1,12 @@
-import { useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import AddForm from "../components/add-form/add-form.component";
 import Student from "../components/student/student.component";
 import useLocalStorage from "../hooks/local-storage.hook";
 import { IStudent } from "../types";
 import reducer from "../state/reducer";
+import { useSearchParams } from "react-router-dom";
+
+const COURSES_FILTERS = ["Math", "HTML", "CSS", "OOP"];
 
 const Main = () => {
   const lastStdRef = useRef<HTMLDivElement>(null);
@@ -11,10 +14,15 @@ const Main = () => {
     studentsList: [],
     totalAbsents: 0,
   });
+  const [params, setParams] = useSearchParams();
+  const [filteredList, setFilteredList] = useState<IStudent[]>(
+    state.studentsList
+  );
 
   const { storedData } = useLocalStorage(state.studentsList, "students-list");
 
   useEffect(() => {
+    const query = params.get("q") || "";
     const stdList: IStudent[] = storedData || [];
     const totalAbs = stdList.reduce((prev, cur) => {
       return prev + cur.absents;
@@ -23,7 +31,27 @@ const Main = () => {
       type: "LOAD_DATA",
       payload: { studentsList: stdList, totalAbsents: totalAbs },
     });
-  }, [storedData]);
+
+    if (query) {
+      setFilteredList(
+        state.studentsList.filter((std) =>
+          std.name.toLowerCase().includes(query.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredList(state.studentsList);
+    }
+  }, [params, storedData, state.studentsList]);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    if (query.length) {
+      params.set("q", query);
+    } else {
+      params.delete("q");
+    }
+    setParams(params);
+  };
 
   const removeFirst = () => {
     const newList = [...state.studentsList];
@@ -54,6 +82,27 @@ const Main = () => {
           Total Absents {state.totalAbsents}
         </b>
       </div>
+      <div style={{ marginTop: "20px" }}>
+        <input
+          type="text"
+          placeholder="Search"
+          onChange={handleSearch}
+          value={params.get("q") || ""}
+        />
+        <select name="" id="">
+          <option value=""></option>
+          <option value=""></option>
+          <option value=""></option>
+        </select>
+        {COURSES_FILTERS.map((c) => {
+          return (
+            <React.Fragment key={c}>
+              <input type="checkbox" id={c} value={c} />
+              <label htmlFor={c}>{c}</label>
+            </React.Fragment>
+          );
+        })}
+      </div>
       <div
         style={{
           display: "grid",
@@ -61,7 +110,7 @@ const Main = () => {
           gap: "20px",
         }}
       >
-        {state.studentsList.map((student) => (
+        {filteredList.map((student) => (
           <Student
             key={student.id}
             id={student.id}
