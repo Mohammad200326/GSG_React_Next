@@ -24,6 +24,7 @@ const Main = () => {
   useEffect(() => {
     const query = params.get("q") || "";
     const graduated = params.get("graduated");
+    const courses = params.getAll("courses");
     const stdList: IStudent[] = storedData || [];
     const totalAbs = stdList.reduce((prev, cur) => {
       return prev + cur.absents;
@@ -44,9 +45,17 @@ const Main = () => {
     }
 
     if (graduated === "grad") {
-      setFilteredList(state.studentsList.filter((std) => std.isGraduated));
+      setFilteredList((oldState) => oldState.filter((std) => std.isGraduated));
     } else if (graduated === "non-grad") {
-      setFilteredList(state.studentsList.filter((std) => !std.isGraduated));
+      setFilteredList((oldState) => oldState.filter((std) => !std.isGraduated));
+    }
+
+    if (courses.length) {
+      setFilteredList(
+        state.studentsList.filter((std) =>
+          std.coursesList.some((c) => courses.includes(c))
+        )
+      );
     }
   }, [params, storedData, state.studentsList]);
 
@@ -66,6 +75,18 @@ const Main = () => {
       params.delete("graduated");
     } else {
       params.set("graduated", selected);
+    }
+    setParams(params);
+  };
+
+  const handleCourseFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const course = e.target.value;
+    const checked = e.target.checked;
+
+    if (checked) {
+      params.append("courses", course);
+    } else {
+      params.delete("courses", course);
     }
     setParams(params);
   };
@@ -114,11 +135,18 @@ const Main = () => {
           <option value="grad">Graduated</option>
           <option value="non-grad">Not Graduated</option>
         </select>
+        &nbsp;&nbsp;
         {COURSES_FILTERS.map((c) => {
           return (
             <React.Fragment key={c}>
-              <input type="checkbox" id={c} value={c} />
-              <label htmlFor={c}>{c}</label>
+              <input
+                type="checkbox"
+                id={c}
+                value={c}
+                onChange={handleCourseFilter}
+                checked={params.getAll("courses").includes(c)}
+              />
+              <label htmlFor={c}>{c}</label>&nbsp;&nbsp;
             </React.Fragment>
           );
         })}
